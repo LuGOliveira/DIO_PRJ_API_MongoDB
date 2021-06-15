@@ -2,6 +2,7 @@
 using Api.Models;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
+using System;
 
 namespace Api.Controllers
 {
@@ -34,6 +35,24 @@ namespace Api.Controllers
             var infectados = _infectadosCollection.Find(Builders<Infectado>.Filter.Empty).ToList();
             
             return Ok(infectados);
+        }
+
+        [HttpPut]
+        public ActionResult AtualizarInfectado([FromBody] InfectadoDto dto)
+        {
+        
+            _infectadosCollection.UpdateOne(Builders<Infectado>.Filter.Where(_ => _.DataNascimento == dto.DataNascimento), Builders<Infectado>.Update.Set("sexo", dto.Sexo));
+
+            return Ok("Infectado atualizado com sucesso");
+        }
+
+        [HttpDelete("{dtNasc}")]
+        public ActionResult DeleteInfectado(DateTime dtNasc)
+        {
+
+            _infectadosCollection.DeleteOne(Builders<Infectado>.Filter.Where(_ => _.DataNascimento == dtNasc));
+
+            return Ok("Infectado excluido com sucesso");
         }
     }
 }
